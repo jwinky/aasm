@@ -145,13 +145,17 @@ module AASM
     begin
       old_state = aasm_state_object_for_state(aasm_current_state)
 
-
       old_state.call_action(:exit, self)
 
       # new event before callback
       event.call_action(:before, self)
 
-      new_state_name = event.fire(self, *args)
+      if args.size > 0 && self.class.aasm_states.any? {|s| s == args.first.to_sym } 
+        target_state = args.shift.to_sym
+      else
+        target_state = nil
+      end
+      new_state_name = event.fire(self, target_state, *args)
 
       unless new_state_name.nil?
         new_state = aasm_state_object_for_state(new_state_name)
