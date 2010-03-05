@@ -150,7 +150,7 @@ module AASM
       # new event before callback
       event.call_action(:before, self)
 
-      if args.size > 0 && self.class.aasm_states.any? {|s| s == args.first.to_sym } 
+      if args.size > 0 && !args.first.nil? && self.class.aasm_states.any? {|s| s == args.first.to_sym } 
         target_state = args.shift.to_sym
       else
         target_state = nil
